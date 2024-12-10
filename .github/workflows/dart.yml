@@ -3,44 +3,41 @@ name: Flutter Build
 on:
   workflow_dispatch:
 
-
 jobs:
-  setup-flutter:
-    name: Setup Flutter
+  # 通用环境准备（Ubuntu），如需在构建前做测试或准备数据可在此进行
+  setup-environment:
+    name: Setup Environment
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
 
+      # 安装 Flutter SDK
       - name: Setup Flutter SDK
         uses: subosito/flutter-action@v2
         with:
           flutter-version: stable
 
+      # 获取项目依赖
+      - name: Flutter Pub Get
+        run: flutter pub get
+
+      # 如果需要测试，请在此添加测试命令（可选）
+      # - name: Run Flutter Tests
+      #   run: flutter test
+
+      # 如果需要下载 test.db 或配置文件 mcp_server.json，请在此添加命令（例如从某个 URL 下载）
+      # - name: Download test.db
+      #   run: curl -L https://example.com/test.db -o test.db
+
+      # Flutter Doctor 检查环境
       - name: Flutter Doctor
         run: flutter doctor
-
-  build-windows:
-    name: Build Windows App
-    runs-on: windows-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
-
-      - name: Setup Flutter SDK
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: stable
-
-      - name: Flutter Doctor
-        run: flutter doctor
-
-      - name: Build Flutter for Windows
-        run: flutter build windows
 
   build-macos:
-    name: Build macOS App
+    name: Build for macOS
     runs-on: macos-latest
+    needs: setup-environment
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -50,15 +47,54 @@ jobs:
         with:
           flutter-version: stable
 
+      - name: Flutter Pub Get
+        run: flutter pub get
+
       - name: Flutter Doctor
         run: flutter doctor
 
-      - name: Build Flutter for macOS
-        run: flutter build macos
+      - name: Build macOS
+        run: flutter build macos --release
+
+      # 若需要保存构建产物，请使用 artifacts
+      - name: Upload macOS Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: macos-app
+          path: build/macos/Build/Products/Release/*.app
+
+  build-windows:
+    name: Build for Windows
+    runs-on: windows-latest
+    needs: setup-environment
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: stable
+
+      - name: Flutter Pub Get
+        run: flutter pub get
+
+      - name: Flutter Doctor
+        run: flutter doctor
+
+      - name: Build Windows
+        run: flutter build windows --release
+
+      - name: Upload Windows Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: windows-app
+          path: build/windows/runner/Release/*.exe
 
   build-ubuntu:
-    name: Build Linux App
+    name: Build for Linux (Ubuntu)
     runs-on: ubuntu-latest
+    needs: setup-environment
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -67,16 +103,26 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           flutter-version: stable
+
+      - name: Flutter Pub Get
+        run: flutter pub get
 
       - name: Flutter Doctor
         run: flutter doctor
 
-      - name: Build Flutter for Linux
-        run: flutter build linux
+      - name: Build Linux
+        run: flutter build linux --release
+
+      - name: Upload Linux Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: linux-app
+          path: build/linux/x64/release/bundle/*
 
   build-android:
-    name: Build Android APK
+    name: Build for Android
     runs-on: ubuntu-latest
+    needs: setup-environment
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -86,13 +132,23 @@ jobs:
         with:
           flutter-version: stable
 
+      # 配置 Android 环境
       - name: Setup Android Environment
         uses: android-actions/setup-android@v2
         with:
           java-version: '11'
 
+      - name: Flutter Pub Get
+        run: flutter pub get
+
       - name: Flutter Doctor
         run: flutter doctor
 
-      - name: Build Flutter APK
-        run: flutter build apk
+      - name: Build Android APK
+        run: flutter build apk --release
+
+      - name: Upload Android Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: android-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
