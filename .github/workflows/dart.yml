@@ -2,9 +2,19 @@ name: Flutter Build
 
 on:
   workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Tag name for the release'
+        required: true
+      release_name:
+        description: 'Release name'
+        required: true
+  # 可选：如果您希望在推送标签时自动发布，可以取消注释以下内容
+  # push:
+  #   tags:
+  #     - 'v*.*.*'
 
 jobs:
-  # 通用环境准备（Ubuntu），如需在构建前做测试或准备数据可在此进行
   setup-environment:
     name: Setup Environment
     runs-on: ubuntu-latest
@@ -12,25 +22,19 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # 安装 Flutter SDK
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ninja-build libgtk-3-dev
+
       - name: Setup Flutter SDK
         uses: subosito/flutter-action@v2
         with:
           channel: beta
 
-      # 获取项目依赖
       - name: Flutter Pub Get
         run: flutter pub get
 
-      # 如果需要测试，请在此添加测试命令（可选）
-      # - name: Run Flutter Tests
-      #   run: flutter test
-
-      # 如果需要下载 test.db 或配置文件 mcp_server.json，请在此添加命令（例如从某个 URL 下载）
-      # - name: Download test.db
-      #   run: curl -L https://example.com/test.db -o test.db
-
-      # Flutter Doctor 检查环境
       - name: Flutter Doctor
         run: flutter doctor
 
@@ -42,7 +46,6 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # 安装 Flutter SDK
       - name: Setup Flutter SDK
         uses: subosito/flutter-action@v2
         with:
@@ -57,7 +60,6 @@ jobs:
       - name: Build macOS
         run: flutter build macos --release
 
-      # 若需要保存构建产物，请使用 artifacts
       - name: Upload macOS Artifact
         uses: actions/upload-artifact@v3
         with:
@@ -72,7 +74,6 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # 安装 Flutter SDK
       - name: Setup Flutter SDK
         uses: subosito/flutter-action@v2
         with:
@@ -101,7 +102,6 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # 安装 Flutter SDK
       - name: Setup Flutter SDK
         uses: subosito/flutter-action@v2
         with:
@@ -130,13 +130,11 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # 安装 Flutter SDK
       - name: Setup Flutter SDK
         uses: subosito/flutter-action@v2
         with:
           channel: beta
 
-      # 配置 Android 环境
       - name: Setup Android Environment
         uses: android-actions/setup-android@v2
         with:
@@ -156,3 +154,62 @@ jobs:
         with:
           name: android-apk
           path: build/app/outputs/flutter-apk/app-release.apk
+
+  create-release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    needs: [build-macos, build-windows, build-ubuntu, build-android]
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Download macOS Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: macos-app
+
+      - name: Download Windows Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: windows-app
+
+      - name: Download Linux Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: linux-app
+
+      - name: Download Android APK
+        uses: actions/download-artifact@v3
+        with:
+          name: android-apk
+
+      - name: Create Release
+        id: create_release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ github.event.inputs.tag_name }}
+          name: ${{ github.event.inputs.release_name }}
+          body: |
+            自动化生成的 Flutter 应用发布。
+          draft: false
+          prerelease: false
+
+      - name: Upload macOS App to Release
+        uses: ncipollo/release-action@v1
+        with:
+          upload: macos-app/*.app
+
+      - name: Upload Windows App to Release
+        uses: ncipollo/release-action@v1
+        with:
+          upload: windows-app/*.exe
+
+      - name: Upload Linux App to Release
+        uses: ncipollo/release-action@v1
+        with:
+          upload: linux-app/*
+
+      - name: Upload Android APK to Release
+        uses: ncipollo/release-action@v1
+        with:
+          upload: android-apk/app-release.apk
