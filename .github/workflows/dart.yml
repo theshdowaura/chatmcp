@@ -49,7 +49,7 @@ jobs:
         run: flutter pub get
 
       - name: Flutter Doctor
-        run: flutter doctor
+        run: flutter doctor -v
 
       - name: Build macOS
         run: flutter build macos --release
@@ -67,15 +67,6 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Cache Flutter SDK
-        uses: actions/cache@v3
-        with:
-          path: ${{ github.workspace }}/flutter
-          key: ${{ runner.os }}-flutter-${{ env.FLUTTER_CHANNEL }}-${{ env.FLUTTER_VERSION }}
-          restore-keys: |
-            ${{ runner.os }}-flutter-${{ env.FLUTTER_CHANNEL }}-
-            ${{ runner.os }}-flutter-
-
       - name: Setup Flutter SDK
         uses: subosito/flutter-action@v2
         with:
@@ -86,26 +77,29 @@ jobs:
       - name: Flutter Config - Enable Windows Desktop
         run: flutter config --enable-windows-desktop
 
-      - name: Flutter Pub Get
-        run: flutter pub get
-
       - name: Flutter Doctor
-        run: flutter doctor
+        run: flutter doctor -v
+
+      - name: Check for windows directory
+        run: |
+          if (!(Test-Path "windows")) {
+            Write-Error "windows directory does not exist in the project. Please add Windows platform support."
+            exit 1
+          }
 
       - name: Build Windows
-        run: flutter build windows --release
+        run: flutter build windows --release --verbose
+
+      - name: Upload Windows Build Directory
+        uses: actions/upload-artifact@v3
+        with:
+          name: windows-build
+          path: build/windows/**
 
       - name: List Build Directory
         run: |
           echo "Listing build/windows/runner/Release directory:"
           dir build/windows/runner/Release/
-
-      - name: Verify .exe Exists
-        run: |
-          if (!(Test-Path "build/windows/runner/Release/*.exe")) {
-            Write-Error "No .exe files found in build/windows/runner/Release/"
-            exit 1
-          }
 
       - name: Upload Windows Artifact
         uses: actions/upload-artifact@v3
@@ -155,19 +149,16 @@ jobs:
         run: flutter pub get
 
       - name: Flutter Doctor
-        run: flutter doctor
-
-      - name: Print Environment Variables
-        run: env
-
-      - name: Print PATH
-        run: echo $PATH
-
-      - name: Flutter Config
-        run: flutter config
+        run: flutter doctor -v
 
       - name: Build Linux
         run: flutter build linux --release
+
+      - name: Upload Linux Build Directory
+        uses: actions/upload-artifact@v3
+        with:
+          name: linux-build
+          path: build/linux/**
 
       - name: Upload Linux Artifact
         uses: actions/upload-artifact@v3
@@ -207,7 +198,7 @@ jobs:
         run: flutter pub get
 
       - name: Flutter Doctor
-        run: flutter doctor
+        run: flutter doctor -v
 
       - name: Build Android APK
         run: flutter build apk --release
