@@ -16,8 +16,7 @@ jobs:
       - name: Setup Flutter SDK
         uses: subosito/flutter-action@v2
         with:
-            flutter-version: '3.5.4'
-            channel: stable
+            channel: beta
           
 
       # 获取项目依赖
