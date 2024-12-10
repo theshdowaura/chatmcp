@@ -30,6 +30,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Cache Flutter SDK
+        id: cache-flutter-sdk
         uses: actions/cache@v3
         with:
           path: ${{ github.workspace }}/flutter
@@ -37,7 +38,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-flutter-${{ env.FLUTTER_CHANNEL }}-
             ${{ runner.os }}-flutter-
-      
+
       - name: Setup Flutter SDK
         if: steps.cache-flutter-sdk.outputs.cache-hit != 'true'
         uses: subosito/flutter-action@v2
@@ -56,8 +57,18 @@ jobs:
 
       - name: Install Dependencies
         run: |
+          echo "Installing dependencies..."
           sudo apt-get update
-          sudo apt-get install -y ninja-build libgtk-3-dev build-essential
+          sudo apt-get install -y ninja-build libgtk-3-dev build-essential cmake
+
+      - name: Verify Dependencies Installation
+        run: |
+          echo "Verifying dependencies..."
+          which ninja
+          which g++
+          which cmake
+          cmake --version
+          g++ --version
 
       - name: Flutter Pub Get
         run: flutter pub get
@@ -81,9 +92,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-flutter-${{ env.FLUTTER_CHANNEL }}-
             ${{ runner.os }}-flutter-
-      
+
       - name: Setup Flutter SDK
-        if: steps.cache-flutter-sdk.outputs.cache-hit != 'true'
         uses: subosito/flutter-action@v2
         with:
           channel: ${{ env.FLUTTER_CHANNEL }}
@@ -121,9 +131,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-flutter-${{ env.FLUTTER_CHANNEL }}-
             ${{ runner.os }}-flutter-
-      
+
       - name: Setup Flutter SDK
-        if: steps.cache-flutter-sdk.outputs.cache-hit != 'true'
         uses: subosito/flutter-action@v2
         with:
           channel: ${{ env.FLUTTER_CHANNEL }}
@@ -161,9 +170,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-flutter-${{ env.FLUTTER_CHANNEL }}-
             ${{ runner.os }}-flutter-
-      
+
       - name: Setup Flutter SDK
-        if: steps.cache-flutter-sdk.outputs.cache-hit != 'true'
         uses: subosito/flutter-action@v2
         with:
           channel: ${{ env.FLUTTER_CHANNEL }}
@@ -201,9 +209,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-flutter-${{ env.FLUTTER_CHANNEL }}-
             ${{ runner.os }}-flutter-
-      
+
       - name: Setup Flutter SDK
-        if: steps.cache-flutter-sdk.outputs.cache-hit != 'true'
         uses: subosito/flutter-action@v2
         with:
           channel: ${{ env.FLUTTER_CHANNEL }}
