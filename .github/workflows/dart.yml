@@ -16,8 +16,7 @@ jobs:
       - name: Setup Flutter SDK
         uses: subosito/flutter-action@v2
         with:
-            channel: beta
-          
+          channel: beta
 
       # 获取项目依赖
       - name: Flutter Pub Get
@@ -43,10 +42,11 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # - name: Setup Flutter SDK
-      #   uses: subosito/flutter-action@v2
-      #   with:
-      #     flutter-version: beta
+      # 安装 Flutter SDK
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          channel: beta
 
       - name: Flutter Pub Get
         run: flutter pub get
@@ -72,10 +72,11 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # - name: Setup Flutter SDK
-      #   uses: subosito/flutter-action@v2
-      #   with:
-      #     flutter-version: stable
+      # 安装 Flutter SDK
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          channel: beta
 
       - name: Flutter Pub Get
         run: flutter pub get
@@ -100,10 +101,11 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # - name: Setup Flutter SDK
-      #   uses: subosito/flutter-action@v2
-      #   with:
-      #     flutter-version: stable
+      # 安装 Flutter SDK
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          channel: beta
 
       - name: Flutter Pub Get
         run: flutter pub get
@@ -128,10 +130,11 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # - name: Setup Flutter SDK
-      #   uses: subosito/flutter-action@v2
-      #   with:
-      #     flutter-version: stable
+      # 安装 Flutter SDK
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          channel: beta
 
       # 配置 Android 环境
       - name: Setup Android Environment
