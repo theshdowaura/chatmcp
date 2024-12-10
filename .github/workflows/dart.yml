@@ -43,10 +43,10 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Setup Flutter SDK
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: stable
+      # - name: Setup Flutter SDK
+      #   uses: subosito/flutter-action@v2
+      #   with:
+      #     flutter-version: beta
 
       - name: Flutter Pub Get
         run: flutter pub get
@@ -72,10 +72,10 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Setup Flutter SDK
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: stable
+      # - name: Setup Flutter SDK
+      #   uses: subosito/flutter-action@v2
+      #   with:
+      #     flutter-version: stable
 
       - name: Flutter Pub Get
         run: flutter pub get
@@ -100,10 +100,10 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Setup Flutter SDK
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: stable
+      # - name: Setup Flutter SDK
+      #   uses: subosito/flutter-action@v2
+      #   with:
+      #     flutter-version: stable
 
       - name: Flutter Pub Get
         run: flutter pub get
@@ -128,10 +128,10 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Setup Flutter SDK
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: stable
+      # - name: Setup Flutter SDK
+      #   uses: subosito/flutter-action@v2
+      #   with:
+      #     flutter-version: stable
 
       # 配置 Android 环境
       - name: Setup Android Environment
