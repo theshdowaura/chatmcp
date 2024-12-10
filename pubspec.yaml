@@ -111,5 +111,5 @@ flutter:
   # see https://flutter.dev/to/font-from-package
 
   assets:
-    - .env
+   # - .env
     - assets/mcp_server.json
