@@ -1,0 +1,98 @@
+name: Flutter Build
+
+on:
+  workflow_dispatch:
+
+
+jobs:
+  setup-flutter:
+    name: Setup Flutter
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: stable
+
+      - name: Flutter Doctor
+        run: flutter doctor
+
+  build-windows:
+    name: Build Windows App
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: stable
+
+      - name: Flutter Doctor
+        run: flutter doctor
+
+      - name: Build Flutter for Windows
+        run: flutter build windows
+
+  build-macos:
+    name: Build macOS App
+    runs-on: macos-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: stable
+
+      - name: Flutter Doctor
+        run: flutter doctor
+
+      - name: Build Flutter for macOS
+        run: flutter build macos
+
+  build-ubuntu:
+    name: Build Linux App
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: stable
+
+      - name: Flutter Doctor
+        run: flutter doctor
+
+      - name: Build Flutter for Linux
+        run: flutter build linux
+
+  build-android:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: stable
+
+      - name: Setup Android Environment
+        uses: android-actions/setup-android@v2
+        with:
+          java-version: '11'
+
+      - name: Flutter Doctor
+        run: flutter doctor
+
+      - name: Build Flutter APK
+        run: flutter build apk
